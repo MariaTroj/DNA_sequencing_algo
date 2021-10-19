@@ -2,25 +2,25 @@ from practical1_boyer_moore import *
 
 
 def approximate_match(pattern: str, text: str, n: int):
-    segment_length = int(round(len(p) / (n+1)))
+    segment_length = int(round(len(pattern) / (n + 1)))
     all_matches = set()
     for i in range(n+1):
         start = i*segment_length
-        end = min((i+1)*segment_length, len(p))
-        p_bm = BoyerMoore(p[start:end], alphabet='ACGT')
-        matches = boyer_moore(p[start:end], p_bm, t)
+        end = min((i+1) * segment_length, len(pattern))
+        p_bm = BoyerMoore(pattern[start:end], alphabet='ACGT')
+        matches = boyer_moore(pattern[start:end], p_bm, text)
         # Extend matching segments to see if whole p matches
         for m in matches:
-            if m < start or m-start+len(p) > len(t):
+            if m < start or m-start+len(pattern) > len(text):
                 continue
             mismatches = 0
             for j in range(0, start):
-                if not p[j] == t[m-start+j]:
+                if not pattern[j] == text[m - start + j]:
                     mismatches += 1
                     if mismatches > n:
                         break
-            for j in range(end, len(p)):
-                if not p[j] == t[m-start+j]:
+            for j in range(end, len(pattern)):
+                if not pattern[j] == text[m - start + j]:
                     mismatches += 1
                     if mismatches > n:
                         break
@@ -29,6 +29,7 @@ def approximate_match(pattern: str, text: str, n: int):
     return list(all_matches)
 
 
-p = 'AACTTG'
-t = 'CACTTAATTTG'
-print(approximate_match(p, t, 2))
+if __name__ == '__main__':
+    pattern = 'AACTTG'
+    text = 'CACTTAATTTG'
+    print(approximate_match(pattern, text, 2))

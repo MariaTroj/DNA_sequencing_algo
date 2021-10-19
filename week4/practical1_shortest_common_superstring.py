@@ -18,17 +18,19 @@ def overlap(a, b, min_length=3):
 
 
 def scs(ss):
-    """ Returns shortest common superstring of given strings,
-        assuming no string is a strict substring of another """
+    """ Returns shortest common superstring of given
+        strings, which must be the same length """
     shortest_sup = None
     for ssperm in itertools.permutations(ss):
-        sup = ssperm[0]
-        for i in range(len(ss)-1):
-            olen = overlap(ssperm[i], ssperm[i+1], min_length=1)
-            sup += ssperm[i+1][olen:]
+        sup = ssperm[0]  # superstring starts as first string
+        for i in range(len(ss) - 1):
+            # overlap adjacent strings A and B in the permutation
+            olen = overlap(ssperm[i], ssperm[i + 1], min_length=1)
+            # add non-overlapping portion of B to superstring
+            sup += ssperm[i + 1][olen:]
         if shortest_sup is None or len(sup) < len(shortest_sup):
-            shortest_sup = sup
-    return shortest_sup
+            shortest_sup = sup  # found shorter superstring
+    return shortest_sup  # return shortest
 
 
 def pick_maximal_overlap(reads, k):

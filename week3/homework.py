@@ -1,11 +1,4 @@
-def readGenome(filename):
-    genome = ''
-    with open(filename, 'r') as f:
-        for line in f:
-            # ignore header line with genome information
-            if not line[0] == '>':
-                genome += line.rstrip()
-    return genome
+from file_reading import *
 
 
 def local_alignment(pattern, text):
@@ -52,22 +45,6 @@ def overlap(a, b, min_length=3):
         start += 1  # move just past previous match
 
 
-def readFastq(filename):
-    sequences = []
-    qualities = []
-    with open(filename) as fh:
-        while True:
-            fh.readline() # skip name line
-            seq = fh.readline().rstrip() # read base sequence
-            fh.readline() # skip placeholder line
-            qual = fh.readline().rstrip() #base quality line
-            if len(seq) == 0:
-                break
-            sequences.append(seq)
-            qualities.append(qual)
-    return sequences, qualities
-
-
 def overlap_all_pairs(reads, min_overlap_length):
     kmers = {}
     overlap_pairs = []
@@ -87,11 +64,6 @@ def overlap_all_pairs(reads, min_overlap_length):
 
 
 if __name__ == "__main__":
-    # reference_genome = readGenome("..\\chr1.GRCh38.excerpt.fasta")
-    # pattern = 'GATTTACCAGATTGAG'
-    #
-    # print(local_alignment(pattern, reference_genome))
-
-    reads, qualities = readFastq("..\\ERR266411_1.for_asm.fastq")
+    reads, qualities = read_seq_and_qual("..\\ERR266411_1.for_asm.fastq")
     overlap_pairs = overlap_all_pairs(reads, 30)
     print(len(overlap_pairs))

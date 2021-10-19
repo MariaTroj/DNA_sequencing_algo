@@ -1,19 +1,17 @@
 import bisect
-import sys
-
 
 class Index(object):
-    def __init__(self, t, k):
+    def __init__(self, text: str, k: int):
         ''' Create index from all substrings of size 'length' '''
         self.k = k  # k-mer length (k)
         self.index = []
-        for i in range(len(t) - k + 1):  # for each k-mer
-            self.index.append((t[i:i + k], i))  # add (k-mer, offset) pair
+        for i in range(len(text) - k + 1):  # for each k-mer
+            self.index.append((text[i:i + k], i))  # add (k-mer, offset) pair
         self.index.sort()  # alphabetize by k-mer
 
-    def query(self, p):
+    def query(self, pattern):
         ''' Return index hits for first k-mer of P '''
-        kmer = p[:self.k]  # query with first k-mer
+        kmer = pattern[:self.k]  # query with first k-mer
         i = bisect.bisect_left(self.index, (kmer, -1))  # binary search
         hits = []
         while i < len(self.index):  # collect matching index entries
@@ -24,11 +22,11 @@ class Index(object):
         return hits
 
 
-def queryIndex(p, t, index):
+def query_index(pattern: str, text: str, index: Index):
     k = index.k
     offsets = []
-    for i in index.query(p):
-        if p[k:] == t[i + k:i + len(p)]:  # verify that rest of P matches
+    for i in index.query(pattern):
+        if pattern[k:] == text[i + k:i + len(pattern)]:  # verify that rest of P matches
             offsets.append(i)
     return offsets
 
@@ -36,4 +34,4 @@ if __name__ == "__main__":
     t = 'ACTTGGAGATCTTTGAGGCTAGGTATTCGGGATCGAAGCTCATTTCGGGGATCGATTACGATATGGTGGGTATTCGGGA'
     p = 'GGTATTCGGGA'
     index = Index(t, 4)
-    print(queryIndex(p, t, index))
+    print(query_index(p, t, index))

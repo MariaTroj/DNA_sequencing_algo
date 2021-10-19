@@ -1,5 +1,7 @@
-from bm_preproc import BoyerMoore
-from kmer_index import *
+from week2.bm_preproc import BoyerMoore
+from week2.kmer_index import *
+from file_reading import *
+
 
 def boyer_moore_with_counts(pattern: str, p_bm: BoyerMoore, text: str) -> tuple[list, int, int]:
     """ Do Boyer-Moore matching
@@ -12,10 +14,10 @@ def boyer_moore_with_counts(pattern: str, p_bm: BoyerMoore, text: str) -> tuple[
         shift = 1
         mismatched = False
         num_alignments += 1
-        for j in range(len(pattern)-1, -1, -1):
+        for j in range(len(pattern) - 1, -1, -1):
             num_character_comparisons += 1
-            if pattern[j] != text[i+j]:
-                skip_bc = p_bm.bad_character_rule(j, text[i+j])
+            if pattern[j] != text[i + j]:
+                skip_bc = p_bm.bad_character_rule(j, text[i + j])
                 skip_gs = p_bm.good_suffix_rule(j)
                 shift = max(shift, skip_bc, skip_gs)
                 mismatched = True
@@ -46,32 +48,31 @@ def naive_with_counts(pattern, text) -> tuple[list, int, int]:
 
 
 def index_assisted_approximate_matching(pattern: str, k_mers_index: Index, text: str,
-                                        max_n_mismatches:
-int):
+                                        max_n_mismatches: int):
     """
     Function that, given a length-24 pattern P and given an Index object
     built on 8-mers, finds all approximate occurrences of P within T with up to 2 mismatches.
     Insertions and deletions are not allowed. Don't consider any reverse complements """
-    segment_length = int(round(len(pattern) / (max_n_mismatches+1)))
+    segment_length = int(round(len(pattern) / (max_n_mismatches + 1)))
     index_hits = 0
     all_matches = set()
-    for i in range(max_n_mismatches+1):
-        start = i*segment_length
-        end = min((i+1)*segment_length, len(text))
+    for i in range(max_n_mismatches + 1):
+        start = i * segment_length
+        end = min((i + 1) * segment_length, len(text))
         matches = k_mers_index.query(pattern[start:end])
         index_hits += len(matches)
         # Extend matching segments to see if whole p matches
         for m in matches:
-            if m < start or m-start+len(pattern) > len(text):
+            if m < start or m - start + len(pattern) > len(text):
                 continue
             mismatches = 0
             for j in range(0, start):
-                if not pattern[j] == text[m-start+j]:
+                if not pattern[j] == text[m - start + j]:
                     mismatches += 1
                     if mismatches > max_n_mismatches:
                         break
             for j in range(end, len(pattern)):
-                if not pattern[j] == text[m-start+j]:
+                if not pattern[j] == text[m - start + j]:
                     mismatches += 1
                     if mismatches > max_n_mismatches:
                         break
@@ -106,15 +107,9 @@ def query_subseq(pattern: str, text: str, subseq_ind: SubseqIndex, max_n_mismatc
 
 if __name__ == "__main__":
     pattern = 'GGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGGGAGGCCGAGG'
-    text = ''
+    text = read_genome("..\\chr1.GRCh38.excerpt.fasta")
     alphabet = 'ACGT '
     p_bm = BoyerMoore(pattern, alphabet)
-
-    with open("..\\chr1.GRCh38.excerpt.fasta", 'r') as file:
-        for line in file:
-            if line.startswith('>'):
-                continue
-            text += line.strip()
 
     # Question 1, 2, 3
     occurrences_bm, num_alignments_bm, num_character_comparisons_bm = boyer_moore_with_counts(
@@ -128,13 +123,13 @@ if __name__ == "__main__":
     pattern = 'GGCGCGGTGGCTCACGCCTGTAAT'
     k_mers_index = Index(text, 8)
     approximate_occurences, index_hits = index_assisted_approximate_matching(pattern,
-                                                                              k_mers_index, text, 2)
+                                                                             k_mers_index, text, 2)
     print(index_hits, len(approximate_occurences), approximate_occurences)
 
     total_num_alignments_bm = 0
     for i in range(0, 3):
-        p_bm = BoyerMoore(pattern[i*8:(i+1)*8], alphabet)
-        occurrences_bm, _, _ = boyer_moore_with_counts(pattern[i*8:(i+1)*8], p_bm, text)
+        p_bm = BoyerMoore(pattern[i * 8:(i + 1) * 8], alphabet)
+        occurrences_bm, _, _ = boyer_moore_with_counts(pattern[i * 8:(i + 1) * 8], p_bm, text)
         total_num_alignments_bm += len(occurrences_bm)
     print(total_num_alignments_bm)
 

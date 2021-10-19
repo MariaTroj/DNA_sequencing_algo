@@ -6,7 +6,7 @@ score = [[0, 4, 2, 4, 8],
          [8, 8, 8, 8, 8]]
 
 
-def globalAlignment(x, y):
+def global_alignment(x, y):
     # Create distance matrix
     D = []
     for i in range(len(x) + 1):
@@ -33,4 +33,4 @@ def globalAlignment(x, y):
 if __name__ == "__main__":
     x = 'TATGTCATGC'
     y = 'TATGGCAGC'
-    print(globalAlignment(x, y))
+    print(global_alignment(x, y))

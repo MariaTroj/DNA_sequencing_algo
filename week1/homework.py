@@ -1,10 +1,12 @@
-from practical1 import readFastq, phred33ToQ
-from practical3_naive_algo import naive, reverseComplement, readGenome
+from practical1 import phred_33_to_q
+from practical3_naive_algo import reverse_complement
+from file_reading import *
 import matplotlib.pyplot as plt
 
-def naiveWithRc(pattern, text):
+
+def naive_with_reverse_complement(pattern, text):
     occurrences = []
-    reverse_pattern = reverseComplement(pattern)
+    reverse_pattern = reverse_complement(pattern)
     for i in range(len(text) - len(pattern) + 1):
         match = True
         reverse_match = not (pattern == reverse_pattern)
@@ -22,7 +24,7 @@ def naiveWithRc(pattern, text):
     return occurrences
 
 
-def naive2mm(pattern, text, n_of_mismatches = 2):
+def naive_with_mismatches(pattern, text, n_of_mismatches = 2):
     occurrences = []
     for i in range(len(text) - len(pattern) + 1):
         mismaches = 0
@@ -38,18 +40,18 @@ def naive2mm(pattern, text, n_of_mismatches = 2):
 
 if __name__ == "__main__":
     sequence = 'AGGAGGTT'
-    reference_genome = readGenome('..\\lambda_virus.fa')
+    reference_genome = read_genome('..\\lambda_virus.fa')
 
-    occurrences = naive2mm(sequence, reference_genome)
+    occurrences = naive_with_mismatches(sequence, reference_genome)
     print(occurrences)
 
-    seqs, quals = readFastq("..\\ERR037900_1.first1000.fastq")
+    seqs, quals = read_seq_and_qual("..\\ERR037900_1.first1000.fastq")
 
     average_quality = [0]*len(quals[0])
 
     for qual in quals:
         for i, phred in enumerate(qual):
-            average_quality[i] += phred33ToQ(phred)
+            average_quality[i] += phred_33_to_q(phred)
 
     plot1 = plt.figure(1)
     plt.title("Quality Scores")

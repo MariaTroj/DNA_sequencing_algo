@@ -1,5 +1,4 @@
-from homework import *
-
+from week2.homework import *
 
 def test_naive_with_counts():
     pattern = 'word'

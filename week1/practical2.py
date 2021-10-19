@@ -1,8 +1,8 @@
-from practical1 import readFastq
+from file_reading import read_seq_and_qual
 import matplotlib.pyplot as plt
 
 
-def findGCByPos(reads):
+def find_GC_by_pos(reads):
     ''' Find the GC ratio at each position in the read '''
     # Keep track of the number of G/C bases and the total number of bases at each position
     gc = [0] * 100
@@ -21,9 +21,9 @@ def findGCByPos(reads):
 
 if __name__ == "__main__":
 
-    seqs, quals = readFastq('..\\SRR835775_1.first1000.fastq')
+    seqs, quals = read_seq_and_qual('..\\SRR835775_1.first1000.fastq')
 
-    gc = findGCByPos(seqs)
+    gc = find_GC_by_pos(seqs)
     # Plot Gs and Cs content
     plot2 = plt.figure(2)
     plt.plot(range(len(gc)), gc)

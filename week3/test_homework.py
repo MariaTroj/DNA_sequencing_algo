@@ -14,30 +14,27 @@ def test_overlap_all_pairs():
     assert overlap_all_pairs(reads, 4) == []
 
     reads = ['CGTACG', 'TACGTA', 'GTACGT', 'ACGTAC', 'GTACGA', 'TACGAT']
-    pairs = overlap_all_pairs(reads, 4)
-    for pair in [('CGTACG', 'TACGTA'),
-                 ('CGTACG', 'GTACGT'),
-                 ('CGTACG', 'GTACGA'),
-                 ('CGTACG', 'TACGAT'),
-                 ('TACGTA', 'ACGTAC'),
-                 ('TACGTA', 'CGTACG'),
-                 ('GTACGT', 'TACGTA'),
-                 ('GTACGT', 'ACGTAC'),
-                 ('ACGTAC', 'GTACGA'),
-                 ('ACGTAC', 'GTACGT'),
-                 ('ACGTAC', 'CGTACG'),
-                 ('GTACGA', 'TACGAT')]:
-        assert pair in pairs
-        pairs.remove(pair)
-    assert len(pairs) == 0
-    pairs = overlap_all_pairs(reads, 5)
-    for pair in [('CGTACG', 'GTACGT'),
-                 ('CGTACG', 'GTACGA'),
-                 ('TACGTA', 'ACGTAC'),
-                 ('GTACGT', 'TACGTA'),
-                 ('ACGTAC', 'CGTACG'),
-                 ('GTACGA', 'TACGAT')]:
-        assert pair in pairs
-        pairs.remove(pair)
-    assert len(pairs) == 0
+    pairs = sorted(overlap_all_pairs(reads, 4))
+    solution = sorted([('CGTACG', 'TACGTA'),
+                       ('CGTACG', 'GTACGT'),
+                       ('CGTACG', 'GTACGA'),
+                       ('CGTACG', 'TACGAT'),
+                       ('TACGTA', 'ACGTAC'),
+                       ('TACGTA', 'CGTACG'),
+                       ('GTACGT', 'TACGTA'),
+                       ('GTACGT', 'ACGTAC'),
+                       ('ACGTAC', 'GTACGA'),
+                       ('ACGTAC', 'GTACGT'),
+                       ('ACGTAC', 'CGTACG'),
+                       ('GTACGA', 'TACGAT')])
+    assert pairs == solution
+
+    pairs = sorted(overlap_all_pairs(reads, 5))
+    solution = sorted([('CGTACG', 'GTACGT'),
+                       ('CGTACG', 'GTACGA'),
+                       ('TACGTA', 'ACGTAC'),
+                       ('GTACGT', 'TACGTA'),
+                       ('ACGTAC', 'CGTACG'),
+                       ('GTACGA', 'TACGAT')])
+    assert pairs == solution
 

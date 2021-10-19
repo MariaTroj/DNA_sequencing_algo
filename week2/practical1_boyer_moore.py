@@ -1,4 +1,13 @@
-
+'''
+Functions:
+ - z_array
+ - n_array
+ - big_l_prime_array
+ - smal_l_prime-array
+ - good_suffix_table
+ - dense_bad_char_tab
+are preprocessing pattern and preparing table used by teh bad character rule and good suffix rule
+'''
 def z_array(s):
     """ Use Z algorithm (Gusfield theorem 1.4.1) to preprocess s """
     assert len(s) > 1
@@ -147,7 +156,7 @@ def boyer_moore(pattern: str, p_bm: BoyerMoore, text: str) -> list:
         shift = 1
         mismatched = False
         for j in range(len(pattern)-1, -1, -1):
-            if p[j] != text[i+j]:
+            if pattern[j] != text[i+j]:
                 skip_bc = p_bm.bad_character_rule(j, text[i+j])
                 skip_gs = p_bm.good_suffix_rule(j)
                 shift = max(shift, skip_bc, skip_gs)
